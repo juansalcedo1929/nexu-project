@@ -1,0 +1,215 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API de Marcas y Modelos",
+    "description": "API REST para manejar marcas y modelos en un catálogo"
+  },
+  "paths": {
+    "/brands": {
+      "get": {
+        "summary": "Obtener todas las marcas",
+        "responses": {
+          "200": {
+            "description": "Lista de marcas",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Brand"
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/models": {
+      "get": {
+        "summary": "Obtener todos los modelos",
+        "parameters": [
+          {
+            "name": "greater",
+            "in": "query",
+            "type": "number",
+            "description": "Filtrar modelos con precio promedio mayor o igual a este valor"
+          },
+          {
+            "name": "lower",
+            "in": "query",
+            "type": "number",
+            "description": "Filtrar modelos con precio promedio menor o igual a este valor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de modelos",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Model"
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/brands/{id}/models": {
+      "get": {
+        "summary": "Obtener todos los modelos de una marca específica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID único de la marca"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de modelos",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Model"
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron modelos para esta marca"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo modelo asociado a una marca",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID único de la marca"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModelCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Modelo creado",
+            "schema": {
+              "$ref": "#/definitions/Model"
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/models/{id}": {
+      "put": {
+        "summary": "Actualizar el precio promedio de un modelo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID único del modelo"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModelUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Modelo actualizado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "404": {
+            "description": "Modelo no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Brand": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "average_price": {
+          "type": "number",
+          "format": "float"
+        },
+        "brand_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ModelCreate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "average_price": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "ModelUpdate": {
+      "type": "object",
+      "properties": {
+        "average_price": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    }
+  }
+}
